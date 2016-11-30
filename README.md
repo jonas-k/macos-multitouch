@@ -3,15 +3,15 @@ Rust high level bindings for the multitouch callback function in the private fra
 
 [Usage]
 Add the following to your Cargo.toml:
-'''
+```
 [dependencies.macos_multitouch]
 path = "/Path/to/macos-multitouch"
-'''
+```
 
 Then simply register a callback using a lambda function that is invoked with the trackpad data as soon as something moves on the trackpad.
 Minimal example:
 
-'''
+```
 extern crate macos_multitouch;
 
 fn main() {
@@ -43,4 +43,4 @@ fn main() {
 	let mut input = String::new();
 	std::io::stdin().read_line(&mut input).ok().expect("Failed to read line");
 }
-'''
+```
