@@ -1,9 +1,10 @@
 # macos-multitouch
 Rust high level bindings for the multitouch callback function in the private framework multitouchSupport on macOS 
 
-[Usage]
+**Usage**
+
 Add the following to your Cargo.toml:
-```
+```rust
 [dependencies.macos_multitouch]
 path = "/Path/to/macos-multitouch"
 ```
@@ -11,36 +12,40 @@ path = "/Path/to/macos-multitouch"
 Then simply register a callback using a lambda function that is invoked with the trackpad data as soon as something moves on the trackpad.
 Minimal example:
 
-```
+```rust
 extern crate macos_multitouch;
 
-fn main() {
-	for mut device in macos_multitouch::get_multitouch_devices() {
-		// start sending touches to callback
-		device.register_contact_frame_callback(| device: macos_multitouch::MTDeviceRef, data: &[macos_multitouch::Finger], timestamp: f64, frame: i32 | {
-			println!("Device: 0x{:x}, Timestamp:\t {}, Frame: {}", device as i32, timestamp, frame);
-			for f in data {
-				println!("Frame {}:\t \
-					Angle {:.3},\t \
-					ellipse {:.2}x{:.2},\t \
-					position ({:.6},{:.6}),\t \
-					velocity ({:.5},{:.5}),\t \
-					ID {},\t state {}, Finger number {}, {}?,\t \
-					size {},\t {}?, [{}, {}]?, {}?",
-					f.frame,
-					f.angle * 90.0 / std::f32::consts::FRAC_PI_2,
-					f.major_axis, f.minor_axis,
-					f.normalized.pos.x, f.normalized.pos.y,
-					f.normalized.vel.x, f.normalized.vel.y,
-					f.identifier, f.state, f.finger_number, f.unknown0,
-					f.size, f.unknown1, f.unknown2[0], f.unknown2[1], f.unknown3);
-			}
-		}).unwrap(); // can fail if a callback is registered to the device already
-	}
-	
-	println!("Press enter key to abort\n");
-			
-	let mut input = String::new();
-	std::io::stdin().read_line(&mut input).ok().expect("Failed to read line");
+fn main()
+{
+    for mut device in macos_multitouch::get_multitouch_devices()
+    {
+        // start sending touches to callback
+        device.register_contact_frame_callback(| device: macos_multitouch::MTDeviceRef, data: &[macos_multitouch::Finger], timestamp: f64, frame: i32 |
+        {
+            println!("Device: 0x{:x}, Timestamp:\t {}, Frame: {}", device as i32, timestamp, frame);
+            for f in data
+            {
+                println!("Frame {}:\t \
+                    Angle {:.3},\t \
+                    ellipse {:.2}x{:.2},\t \
+                    position ({:.6},{:.6}),\t \
+                    velocity ({:.5},{:.5}),\t \
+                    ID {},\t state {}, Finger number {}, {}?,\t \
+                    size {},\t {}?, [{}, {}]?, {}?",
+                    f.frame,
+                    f.angle * 90.0 / std::f32::consts::FRAC_PI_2,
+                    f.major_axis, f.minor_axis,
+                    f.normalized.pos.x, f.normalized.pos.y,
+                    f.normalized.vel.x, f.normalized.vel.y,
+                    f.identifier, f.state, f.finger_number, f.unknown0,
+                    f.size, f.unknown1, f.unknown2[0], f.unknown2[1], f.unknown3);
+            }
+        }).unwrap(); // can fail if a callback is registered to the device already
+    }
+    
+    println!("Press enter key to abort\n");
+        
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input).ok().expect("Failed to read line");
 }
 ```
